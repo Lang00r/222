@@ -115,10 +115,33 @@
     }
 
     .ego-state p {
-      margin: 0;
+      margin: 0 0 10px 0;
       font-size: 1em;
       color: #555;
       line-height: 1.4;
+    }
+
+    /* Диаграмма */
+    .bar-container {
+      background-color: #ddd;
+      border-radius: 20px;
+      overflow: hidden;
+      height: 24px;
+      margin-bottom: 25px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .bar {
+      height: 100%;
+      border-radius: 20px 0 0 20px;
+      background-color: #4a90e2;
+      text-align: right;
+      padding-right: 10px;
+      color: white;
+      font-weight: 600;
+      line-height: 24px;
+      white-space: nowrap;
+      transition: width 0.6s ease;
     }
 
     footer {
@@ -155,6 +178,14 @@
         padding: 16px 0;
         font-size: 1.2em;
       }
+      .bar-container {
+        height: 20px;
+      }
+      .bar {
+        line-height: 20px;
+        padding-right: 8px;
+        font-size: 0.9em;
+      }
     }
   </style>
 </head>
@@ -179,7 +210,6 @@
 
   <script>
     // Массив вопросов с привязкой к функциональным эго-состояниям
-    // Каждый вопрос содержит текст и ключ эго-состояния
     const questions = [
       { text: "Я часто критикую себя и других.", egoState: "Критический Родитель" },
       { text: "Я забочусь о других и стараюсь помочь.", egoState: "Заботливый Родитель" },
@@ -229,7 +259,7 @@
     const submitBtn = document.getElementById("submitBtn");
     const resultDiv = document.getElementById("result");
 
-    // Функция для создания вопросов в форме
+    // Создание вопросов
     function renderQuestions() {
       questions.forEach((q, index) => {
         const questionDiv = document.createElement("div");
@@ -252,7 +282,6 @@
           radio.id = `q${index}_a${ans.value}`;
           radio.value = ans.value;
 
-          // Добавляем событие для проверки заполнения всех вопросов
           radio.addEventListener("change", checkAllAnswered);
 
           const span = document.createElement("span");
@@ -268,7 +297,7 @@
       });
     }
 
-    // Проверяем, ответил ли пользователь на все вопросы
+    // Проверка заполнения всех вопросов
     function checkAllAnswered() {
       const totalQuestions = questions.length;
       let answeredCount = 0;
@@ -281,9 +310,20 @@
       submitBtn.disabled = answeredCount !== totalQuestions;
     }
 
-    // Подсчет результатов и отображение интерпретации
+    // Максимальный возможный балл на одно эго-состояние (для диаграммы)
+    // Считаем сколько вопросов на каждое состояние и умножаем на максимальный балл (5)
+    function getMaxScorePerEgo() {
+      const counts = {};
+      egoStates.forEach(state => counts[state] = 0);
+      questions.forEach(q => counts[q.egoState]++);
+      for (let state in counts) {
+        counts[state] *= 5; // max балл за вопрос
+      }
+      return counts;
+    }
+
+    // Подсчет результатов и вывод с диаграммой
     function calculateResults() {
-      // Инициализируем счетчики для каждого эго-состояния
       const scores = {
         "Критический Родитель": 0,
         "Заботливый Родитель": 0,
@@ -302,21 +342,29 @@
         }
       });
 
-      // Формируем вывод результатов
+      const maxScores = getMaxScorePerEgo();
+
       let resultHTML = "<h2>Результаты теста</h2>";
+
       egoStates.forEach(state => {
+        const score = scores[state];
+        const maxScore = maxScores[state];
+        const percent = Math.round((score / maxScore) * 100);
+
         resultHTML += `
           <div class="ego-state">
-            <h3>${state}: ${scores[state]}</h3>
+            <h3>${state}: ${score} / ${maxScore} (${percent}%)</h3>
             <p>${egoInterpretations[state]}</p>
+            <div class="bar-container" aria-label="Диаграмма для ${state}">
+              <div class="bar" style="width: ${percent}%;"
+                title="${percent}%">${percent}%</div>
+            </div>
           </div>
         `;
       });
 
       resultDiv.innerHTML = resultHTML;
       resultDiv.style.display = "block";
-
-      // Прокрутка к результатам
       resultDiv.scrollIntoView({ behavior: "smooth" });
     }
 
