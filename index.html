@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Опросник функциональных эго-состояний</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 0 15px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      margin-bottom: 25px;
+      background: #fff;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .answers {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    label {
+      flex: 1;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    input[type="radio"] {
+      display: none;
+    }
+    input[type="radio"] + span {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      transition: background-color 0.3s, color 0.3s;
+      font-size: 0.9em;
+    }
+    input[type="radio"]:checked + span {
+      background-color: #3498db;
+      color: white;
+      border-color: #2980b9;
+      font-weight: bold;
+    }
+    button {
+      display: block;
+      margin: 30px auto;
+      padding: 12px 25px;
+      font-size: 1.1em;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover:not(:disabled) {
+      background-color: #219150;
+    }
+    button:disabled {
+      background-color: #95a5a6;
+      cursor: not-allowed;
+    }
+    #result {
+      background: #ecf0f1;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 30px;
+      box-shadow: inset 0 0 10px #bdc3c7;
+    }
+    .ego-state {
+      margin-bottom: 15px;
+    }
+    .ego-state h3 {
+      margin-bottom: 5px;
+      color: #34495e;
+    }
+    .ego-state p {
+      margin: 0;
+      font-size: 0.95em;
+      color: #555;
+    }
+    footer {
+      margin-top: 50px;
+      font-size: 0.8em;
+      text-align: center;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Опросник функциональных эго-состояний</h1>
+  <p style="text-align:center; max-width:600px; margin: 0 auto 30px;">
+    Этот тест основан на модели Julie Hay (1996) с адаптацией В. Е. Гусаковского. Пожалуйста, ответьте на все вопросы, выбирая степень согласия с утверждениями.
+  </p>
+
+  <form id="testForm">
+
+    <!-- Вопросы будут динамически вставлены сюда -->
+
+  </form>
+
+  <button id="submitBtn" disabled>Показать результат</button>
+
+  <div id="result" style="display:none;"></div>
+
+  <footer>
+    © 2025 Психологический опросник по модели Julie Hay. Разработано для публикации на GitHub Pages.
+  </footer>
+
+  <script>
+    // Массив вопросов с привязкой к функциональным эго-состояниям
+    // Каждый вопрос содержит текст и ключ эго-состояния
+    const questions = [
+      { text: "Я часто критикую себя и других.", egoState: "Критический Родитель" },
+      { text: "Я забочусь о других и стараюсь помочь.", egoState: "Заботливый Родитель" },
+      { text: "Я принимаю решения, основываясь на логике и фактах.", egoState: "Взрослый" },
+      { text: "Я люблю веселиться и быть спонтанным.", egoState: "Свободный Ребенок" },
+      { text: "Я стараюсь соответствовать ожиданиям и правилам.", egoState: "Адаптированный Ребенок" },
+
+      { text: "Я замечаю и исправляю ошибки у себя и окружающих.", egoState: "Критический Родитель" },
+      { text: "Мне важно поддерживать и защищать близких.", egoState: "Заботливый Родитель" },
+      { text: "Я анализирую ситуацию, прежде чем действовать.", egoState: "Взрослый" },
+      { text: "Мне нравится выражать свои чувства открыто.", egoState: "Свободный Ребенок" },
+      { text: "Я часто подавляю свои желания ради других.", egoState: "Адаптированный Ребенок" },
+
+      { text: "Я устанавливаю высокие стандарты для себя и окружающих.", egoState: "Критический Родитель" },
+      { text: "Я проявляю терпение и понимание к другим.", egoState: "Заботливый Родитель" },
+      { text: "Я стараюсь оставаться объективным в любых обстоятельствах.", egoState: "Взрослый" },
+      { text: "Я люблю творить и фантазировать.", egoState: "Свободный Ребенок" },
+      { text: "Я боюсь выражать свои истинные чувства.", egoState: "Адаптированный Ребенок" }
+    ];
+
+    // Шкала ответов с баллами
+    const answerScale = [
+      { label: "Совершенно не согласен", value: 1 },
+      { label: "Скорее не согласен", value: 2 },
+      { label: "Ни согласен, ни не согласен", value: 3 },
+      { label: "Скорее согласен", value: 4 },
+      { label: "Полностью согласен", value: 5 }
+    ];
+
+    const egoStates = [
+      "Критический Родитель",
+      "Заботливый Родитель",
+      "Взрослый",
+      "Свободный Ребенок",
+      "Адаптированный Ребенок"
+    ];
+
+    const egoInterpretations = {
+      "Критический Родитель": "Отражает внутренний голос критики и оценки. Высокий балл может указывать на склонность к самокритике и критике окружающих.",
+      "Заботливый Родитель": "Отражает заботу и поддержку. Высокий балл говорит о способности к эмпатии и поддержке других.",
+      "Взрослый": "Отражает рациональное и объективное мышление. Высокий балл свидетельствует о зрелом подходе к решению задач.",
+      "Свободный Ребенок": "Отражает спонтанность, творчество и эмоциональную открытость. Высокий балл указывает на живость и игривость.",
+      "Адаптированный Ребенок": "Отражает стремление соответствовать ожиданиям и правилам. Высокий балл может говорить о склонности к подавлению собственных желаний."
+    };
+
+    const form = document.getElementById("testForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const resultDiv = document.getElementById("result");
+
+    // Функция для создания вопросов в форме
+    function renderQuestions() {
+      questions.forEach((q, index) => {
+        const questionDiv = document.createElement("div");
+        questionDiv.className = "question";
+
+        const questionTitle = document.createElement("h2");
+        questionTitle.textContent = `Вопрос ${index + 1}: ${q.text}`;
+        questionDiv.appendChild(questionTitle);
+
+        const answersDiv = document.createElement("div");
+        answersDiv.className = "answers";
+
+        answerScale.forEach(ans => {
+          const label = document.createElement("label");
+          label.htmlFor = `q${index}_a${ans.value}`;
+
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = `q${index}`;
+          radio.id = `q${index}_a${ans.value}`;
+          radio.value = ans.value;
+
+          // Добавляем событие для проверки заполнения всех вопросов
+          radio.addEventListener("change", checkAllAnswered);
+
+          const span = document.createElement("span");
+          span.textContent = ans.label;
+
+          label.appendChild(radio);
+          label.appendChild(span);
+          answersDiv.appendChild(label);
+        });
+
+        questionDiv.appendChild(answersDiv);
+        form.appendChild(questionDiv);
+      });
+    }
+
+    // Проверяем, ответил ли пользователь на все вопросы
+    function checkAllAnswered() {
+      const totalQuestions = questions.length;
+      let answeredCount = 0;
+      for (let i = 0; i < totalQuestions; i++) {
+        const radios = document.getElementsByName(`q${i}`);
+        if ([...radios].some(radio => radio.checked)) {
+          answeredCount++;
+        }
+      }
+      submitBtn.disabled = answeredCount !== totalQuestions;
+    }
+
+    // Подсчет результатов и отображение интерпретации
+    function calculateResults() {
+      // Инициализируем счетчики для каждого эго-состояния
+      const scores = {
+        "Критический Родитель": 0,
+        "Заботливый Родитель": 0,
+        "Взрослый": 0,
+        "Свободный Ребенок": 0,
+        "Адаптированный Ребенок": 0
+      };
+
+      questions.forEach((q, i) => {
+        const radios = document.getElementsByName(`q${i}`);
+        for (const radio of radios) {
+          if (radio.checked) {
+            scores[q.egoState] += parseInt(radio.value);
+            break;
+          }
+        }
+      });
+
+      // Формируем вывод результатов
+      let resultHTML = "<h2>Результаты теста</h2>";
+      egoStates.forEach(state => {
+        resultHTML += `
+          <div class="ego-state">
+            <h3>${state}: ${scores[state]}</h3>
+            <p>${egoInterpretations[state]}</p>
+          </div>
+        `;
+      });
+
+      resultDiv.innerHTML = resultHTML;
+      resultDiv.style.display = "block";
+
+      // Прокрутка к результатам
+      resultDiv.scrollIntoView({ behavior: "smooth" });
+    }
+
+    // Инициализация
+    renderQuestions();
+
+    submitBtn.addEventListener("click", e => {
+      e.preventDefault();
+      calculateResults();
+    });
+  </script>
+</body>
+</html>
