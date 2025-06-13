@@ -15,6 +15,18 @@
       padding: 0 20px 40px;
     }
 
+    .highlighted-text {
+      color: #3498db; /* современный голубой цвет */
+      font-weight: 700;
+      font-size: 1.2em;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+      text-align: center;
+      user-select: none;
+      text-shadow: 0 1px 2px rgba(52, 152, 219, 0.5);
+    }
+
     h1, h2 {
       color: #1a1a1a;
       font-weight: 600;
@@ -191,6 +203,7 @@
 </head>
 <body>
 
+  <div class="highlighted-text">POGOVORIM</div>
   <h1>Опросник функциональных эго-состояний</h1>
   <p style="text-align:center; max-width:600px; margin: 0 auto 30px;">
     Этот тест основан на модели Julie Hay (1996) с адаптацией В. Е. Гусаковского. Пожалуйста, ответьте на все вопросы, выбирая степень согласия с утверждениями.
@@ -311,7 +324,6 @@
     }
 
     // Максимальный возможный балл на одно эго-состояние (для диаграммы)
-    // Считаем сколько вопросов на каждое состояние и умножаем на максимальный балл (5)
     function getMaxScorePerEgo() {
       const counts = {};
       egoStates.forEach(state => counts[state] = 0);
