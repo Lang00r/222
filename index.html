@@ -5,97 +5,156 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Опросник функциональных эго-состояний</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 700px;
-      margin: 30px auto;
-      padding: 0 15px;
-      background: #f9f9f9;
-      color: #333;
-    }
-    h1, h2 {
-      text-align: center;
-      color: #2c3e50;
-    }
-    .question {
-      margin-bottom: 25px;
-      background: #fff;
-      padding: 15px 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .answers {
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-    }
-    label {
-      flex: 1;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
-    }
-    input[type="radio"] {
-      display: none;
-    }
-    input[type="radio"] + span {
-      display: inline-block;
-      padding: 8px 12px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
-      transition: background-color 0.3s, color 0.3s;
-      font-size: 0.9em;
-    }
-    input[type="radio"]:checked + span {
-      background-color: #3498db;
-      color: white;
-      border-color: #2980b9;
-      font-weight: bold;
-    }
-    button {
-      display: block;
-      margin: 30px auto;
-      padding: 12px 25px;
-      font-size: 1.1em;
-      background-color: #27ae60;
-      color: white;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    button:hover:not(:disabled) {
-      background-color: #219150;
-    }
-    button:disabled {
-      background-color: #95a5a6;
-      cursor: not-allowed;
-    }
-    #result {
-      background: #ecf0f1;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 30px;
-      box-shadow: inset 0 0 10px #bdc3c7;
-    }
-    .ego-state {
-      margin-bottom: 15px;
-    }
-    .ego-state h3 {
-      margin-bottom: 5px;
-      color: #34495e;
-    }
-    .ego-state p {
-      margin: 0;
-      font-size: 0.95em;
-      color: #555;
-    }
-    footer {
-      margin-top: 50px;
-      font-size: 0.8em;
-      text-align: center;
-      color: #999;
-    }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #ffffff;
+  color: #222222;
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 0 20px 40px;
+}
+
+h1, h2 {
+  color: #1a1a1a;
+  font-weight: 600;
+  text-align: center;
+}
+
+.question {
+  background: #fefefe;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  border-radius: 12px;
+  padding: 20px 25px;
+  margin-bottom: 20px;
+  transition: box-shadow 0.3s ease;
+}
+
+.question:hover {
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.answers {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+label {
+  flex: 1;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.95em;
+  padding: 10px 12px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  background-color: #fafafa;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+input[type="radio"] + span {
+  display: inline-block;
+  width: 100%;
+}
+
+input[type="radio"]:checked + span {
+  background-color: #4a90e2;
+  color: white;
+  border-color: #357ABD;
+  font-weight: 600;
+}
+
+button {
+  display: block;
+  margin: 30px auto 0;
+  padding: 14px 30px;
+  font-size: 1.1em;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  max-width: 300px;
+  width: 100%;
+}
+
+button:hover:not(:disabled) {
+  background-color: #357ABD;
+}
+
+button:disabled {
+  background-color: #b0c4de;
+  cursor: not-allowed;
+}
+
+#result {
+  background: #f7f9fc;
+  padding: 25px 30px;
+  border-radius: 15px;
+  margin-top: 40px;
+  box-shadow: inset 0 0 15px #d0d7e3;
+  color: #333;
+}
+
+.ego-state {
+  margin-bottom: 20px;
+}
+
+.ego-state h3 {
+  margin-bottom: 8px;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.ego-state p {
+  margin: 0;
+  font-size: 1em;
+  color: #555;
+  line-height: 1.4;
+}
+
+footer {
+  margin-top: 60px;
+  font-size: 0.85em;
+  text-align: center;
+  color: #999;
+}
+
+/* Адаптивность под смартфоны */
+@media (max-width: 480px) {
+  body {
+    margin: 10px;
+    padding: 0 10px;
+    font-size: 16px;
+  }
+  h1, h2 {
+    font-size: 1.5em;
+  }
+  .question {
+    padding: 15px 20px;
+  }
+  .answers {
+    flex-direction: column;
+    gap: 12px;
+  }
+  label {
+    margin-bottom: 8px;
+    font-size: 1em;
+    padding: 12px 15px;
+  }
+  button {
+    width: 100%;
+    padding: 16px 0;
+    font-size: 1.2em;
+  }
+}
   </style>
 </head>
 <body>
